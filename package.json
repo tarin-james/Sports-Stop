@@ -1,0 +1,11 @@
+{
+  "name": "project-2",
+  "version": "1.0.0",
+  "description": "project 2 week 3-4",
+  "main": "server.js",
+  "scripts": {
+    "test": "start"
+  },
+  "author": "Tarin James",
+  "license": "ISC"
+}
