@@ -52,7 +52,7 @@ app
     });
 
     app.get('/', (req, res) => {
-        res.send(req.session.user !== undefined ? `Logged in as ${req.session,user.displayName}` : "Logged Out")
+        res.send(req.session.user !== undefined ? `Logged in as ${req.session.user.displayName}` : "Logged Out")
     });
 
     app.get('/github/callback', passport.authenticate('github', {

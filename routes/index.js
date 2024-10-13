@@ -7,7 +7,7 @@ router.use('/auctions', require('./auction'));
 
 router.use('/users', require('./users'));
 
-router.get('login', passport.authenticate('github'), (req, res) => {})
+router.get('/login', passport.authenticate('github'), (req, res) => {})
 
 router.get('/logout', function(req, res, next) {
     req.logout(function(err) {
@@ -18,3 +18,5 @@ router.get('/logout', function(req, res, next) {
 
 
 module.exports = router;
+
+// "project-2-jyme.onrender.com"
