@@ -8,7 +8,6 @@
   "host": "sports-stop.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http",
     "https"
   ],
   "paths": {
