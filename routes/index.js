@@ -7,6 +7,10 @@ router.use('/auctions', require('./auction'));
 
 router.use('/users', require('./users'));
 
+router.use('/reviews', require('./reviews'));
+
+router.use('/stores', require('./stores'));
+
 router.get('/login', passport.authenticate('github'), (req, res) => {})
 
 router.get('/logout', function(req, res, next) {
