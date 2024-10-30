@@ -1,15 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('./data/database');
+
 const app = express();
+const port = process.env.PORT || 8080;
+mongodb.initDb((err) => {
+    if(err) {
+        console.log(err)
+    }
+    else {
+        app.listen(port, () => {console.log(`Database is listening and node Running on port ${port}`)});
+    }
+})
 const passport = require('passport');
 const session = require('express-session');
 const GitHubStrategy = require('passport-github2').Strategy;
 const cors = require('cors');
 
-const port = process.env.PORT || 8080;
 
-app
+
+
+
+ app
     .use(bodyParser.json())
     .use(session({
         secret: "secret",
@@ -62,12 +74,6 @@ app
         res.redirect('/');
     });
 
-mongodb.initDb((err) => {
-    if(err) {
-        console.log(err)
-    }
-    else {
-        app.listen(port, () => {console.log(`Database is listening and node Running on port ${port}`)});
-    }
-})
 
+
+module.exports = app;

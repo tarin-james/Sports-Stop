@@ -4,7 +4,7 @@
   "description": "project 2 week 3-4",
   "main": "server.js",
   "scripts": {
-    "test": "",
+    "test": "jest --coverage --runInBand --forceExit",
     "start": "node server.js"
   },
   "author": "Tarin James",
@@ -15,9 +15,11 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "jest": "^29.7.0",
     "mongodb": "^6.9.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
+    "supertest": "^7.0.0",
     "swagger": "^0.7.5",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
