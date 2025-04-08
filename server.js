@@ -9,10 +9,10 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
 
-// --- Middleware Setup ---
+// --- Middleware ---
 app.use(bodyParser.json());
 
-// CORS comes first
+// CORS for frontend on Render
 app.use(
   cors({
     origin: "https://sports-stop-frontend.onrender.com",
@@ -20,16 +20,16 @@ app.use(
   })
 );
 
-// Session config
+// Session setup
 app.use(
   session({
     secret: "secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true, // must be true for HTTPS on Render
+      secure: true,
       httpOnly: true,
-      sameSite: "none", // allows cross-origin cookies
+      sameSite: "none",
     },
   })
 );
@@ -38,7 +38,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Allow preflight requests
+// Optional: respond to preflight requests
 app.options("*", cors());
 
 // --- Passport GitHub Strategy ---
@@ -62,7 +62,7 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-// --- Routes ---
+// --- Auth Routes ---
 app.get("/", (req, res) => {
   res.send(
     req.isAuthenticated()
@@ -75,7 +75,7 @@ app.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "/api-docs",
-    session: true, // must be true to persist session
+    session: true,
   }),
   (req, res) => {
     res.redirect("https://sports-stop-frontend.onrender.com");
@@ -90,7 +90,10 @@ app.get("/auth", (req, res) => {
   }
 });
 
-// --- MongoDB then Start Server ---
+// --- Your app routes (add them after auth setup) ---
+app.use("/", require("./routes/index.js"));
+
+// --- DB Init + Server Start ---
 mongodb.initDb((err) => {
   if (err) {
     console.log(err);
