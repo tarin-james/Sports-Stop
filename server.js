@@ -27,6 +27,7 @@ app
       resave: false,
       saveUninitialized: false,
       cookie: {
+        domain: ".onrender.com",
         secure: true, // true in production with HTTPS
         httpOnly: true,
         sameSite: "none", // allows cross-site GETs like /auth
@@ -49,10 +50,7 @@ app
       "Access-Control-Allow-Methods",
       "GET, POST, PUT, DELETE, OPTIONS"
     );
-    res.setHeader(
-      "Access-Control-Allow-Credentials",
-      "true"
-    );
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     next();
   })
   .use(
