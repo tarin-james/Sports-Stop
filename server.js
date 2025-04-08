@@ -21,19 +21,6 @@ const cors = require("cors");
 
 app
   .use(bodyParser.json())
-  .use(
-    session({
-      secret: "secret",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: false, // true in production with HTTPS
-        httpOnly: true,
-        sameSite: "none", // allows cross-site GETs like /auth
-        maxAge: 60 * 60 * 24 * 1000,
-      },
-    })
-  )
   .use(passport.initialize())
   .use(passport.session())
   .use((req, res, next) => {
@@ -57,6 +44,19 @@ app
       origin: "https://sports-stop-frontend.onrender.com", // your frontend origin
       credentials: true,
       methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+    })
+  )
+  .use(
+    session({
+      secret: "secret",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: true, // true in production with HTTPS
+        httpOnly: true,
+        sameSite: false, // allows cross-site GETs like /auth
+        maxAge: 60 * 60 * 24 * 1000,
+      },
     })
   )
   .use("/", require("./routes/index.js"));
