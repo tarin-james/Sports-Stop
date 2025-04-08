@@ -21,6 +21,7 @@ const cors = require("cors");
 
 app
   .use(bodyParser.json())
+  .use(cookieParser())
   .use(
     session({
       secret: "secret",
@@ -83,7 +84,6 @@ app.get("/", (req, res) => {
       : "Logged Out"
   );
 });
-app.use(cookieParser());
 
 app.get(
   "/github/callback",
@@ -94,7 +94,14 @@ app.get(
   (req, res) => {
     req.session.user = req.user;
 
-    res.redirect("https://sports-stop-frontend.onrender.com");
+    req.session.save(err => {
+      if (err) {
+        console.error("Session save failed:", err);
+        return res.status(500).send("Error saving session.");
+      }
+  
+      res.redirect("https://sports-stop-frontend.onrender.com");
+    });
   }
 );
 
