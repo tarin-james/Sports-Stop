@@ -42,7 +42,7 @@ app
     next();
   })
   .use(cors({ methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"] }))
-  .use(cors({ origin: "*" }))
+  .use(cors({ origin: "https://sports-stop-frontend.onrender.com/" }))
   .use("/", require("./routes/index.js"));
 
 passport.use(
