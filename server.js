@@ -28,6 +28,7 @@ app
       saveUninitialized: false,
       cookie: {
         secure: true, // true in production with HTTPS
+        httpOnly: true,
         sameSite: "none", // allows cross-site GETs like /auth
       },
     })
@@ -93,13 +94,12 @@ app.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "/api-docs",
-    session: false,
+    session: true,
   }),
   (req, res) => {
     req.session.user = req.user;
-    console.log(req.cookies);
-    res.set({ "Set-Cookie": `connect.sid=${req.cookies["connect.sid"]}` });
-    res.redirect("https://sports-stop-frontend.onrender.com");
+
+    res.redirect("http://localhost:8080");
   }
 );
 
