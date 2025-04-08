@@ -15,6 +15,7 @@ mongodb.initDb((err) => {
 });
 const passport = require("passport");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const GitHubStrategy = require("passport-github2").Strategy;
 const cors = require("cors");
 
@@ -83,6 +84,7 @@ app.get("/", (req, res) => {
       : "Logged Out"
   );
 });
+app.use(cookieParser());
 
 app.get(
   "/github/callback",
@@ -92,7 +94,9 @@ app.get(
   }),
   (req, res) => {
     req.session.user = req.user;
-    res.redirect("https://sports-stop-frontend.onrender.com");
+    console.log(req.cookies);
+    res.set({ "Set-Cookie": `connect.sid=${req.cookies["connect.sid"]}` });
+    res.redirect("localhost:8080");
   }
 );
 
