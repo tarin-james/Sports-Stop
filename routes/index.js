@@ -18,7 +18,7 @@ router.get("/logout", function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.redirect("https://sports-stop.onrender.com");
+    res.redirect("https://sports-stop-frontend.onrender.com");
   });
 });
 
