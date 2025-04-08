@@ -9,84 +9,96 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
 
-// CORS MUST come first
-app.use(cors({
-  origin: "https://sports-stop-frontend.onrender.com",
-  credentials: true
-}));
-
-// Body parser
+// --- Middleware Setup ---
 app.use(bodyParser.json());
 
-// Session config — secure & cross-origin
-app.use(session({
-  secret: "secret",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,             // must be true on HTTPS/Render
-    httpOnly: true,
-    sameSite: "none"          // required for cross-site cookies
-  }
-}));
+// CORS comes first
+app.use(
+  cors({
+    origin: "https://sports-stop-frontend.onrender.com",
+    credentials: true,
+  })
+);
 
-// Passport config
+// Session config
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true, // must be true for HTTPS on Render
+      httpOnly: true,
+      sameSite: "none", // allows cross-origin cookies
+    },
+  })
+);
+
+// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// MongoDB init
-mongodb.initDb((err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    app.listen(port, () => {
-      console.log(`Database is listening and node running on port ${port}`);
-    });
-  }
+// Allow preflight requests
+app.options("*", cors());
+
+// --- Passport GitHub Strategy ---
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: process.env.CALLBACK_URL,
+    },
+    function (accessToken, refreshToken, profile, done) {
+      return done(null, profile);
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
 
-// GitHub OAuth setup
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URL
-  },
-  (accessToken, refreshToken, profile, done) => {
-    return done(null, profile);
-  }
-));
-
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
-
-// Routes
+// --- Routes ---
 app.get("/", (req, res) => {
   res.send(
-    req.session.user
-      ? `Logged in as ${req.session.user.displayName}`
+    req.isAuthenticated()
+      ? `Logged in as ${req.user.displayName}`
       : "Logged Out"
   );
 });
 
+app.get(
+  "/github/callback",
+  passport.authenticate("github", {
+    failureRedirect: "/api-docs",
+    session: true, // must be true to persist session
+  }),
+  (req, res) => {
+    res.redirect("https://sports-stop-frontend.onrender.com");
+  }
+);
+
 app.get("/auth", (req, res) => {
-  if (req.session.user) {
-    res.status(200).json(req.session.user);
+  if (req.isAuthenticated()) {
+    res.status(200).json(req.user);
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
 });
 
-app.get("/github/callback",
-  passport.authenticate("github", {
-    failureRedirect: "/api-docs"
-    // Removed session: false
-  }),
-  (req, res) => {
-    req.session.user = req.user;
-    res.redirect("https://sports-stop-frontend.onrender.com");
+// --- MongoDB then Start Server ---
+mongodb.initDb((err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(port, () => {
+      console.log(`Database connected and server running on port ${port}`);
+    });
   }
-);
-
-app.use("/", require("./routes/index.js"));
+});
 
 module.exports = app;
