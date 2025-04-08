@@ -24,7 +24,11 @@ app
     session({
       secret: "secret",
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
+      cookie: {
+        secure: false, // true in production with HTTPS
+        sameSite: "lax", // allows cross-site GETs like /auth
+      },
     })
   )
   .use(passport.initialize())
@@ -41,11 +45,11 @@ app
     );
     next();
   })
-  .use(cors({ methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"] }))
   .use(
     cors({
-      origin: "https://sports-stop-frontend.onrender.com",
+      origin: "https://sports-stop.onrender.com", // your frontend origin
       credentials: true,
+      methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
     })
   )
   .use("/", require("./routes/index.js"));
@@ -88,8 +92,16 @@ app.get(
   }),
   (req, res) => {
     req.session.user = req.user;
-    res.redirect("https://sports-stop-frontend.onrender.com/");
+    res.redirect("https://sports-stop.onrender.com");
   }
 );
+
+app.get("/auth", (req, res) => {
+  if (req.session.user) {
+    res.status(200).json(req.session.user);
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
+});
 
 module.exports = app;
