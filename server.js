@@ -4,19 +4,13 @@ const mongodb = require("./data/database");
 
 const app = express();
 const port = process.env.PORT || 8080;
-mongodb.initDb((err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    app.listen(port, () => {
-      console.log(`Database is listening and node Running on port ${port}`);
-    });
-  }
-});
+
 const passport = require("passport");
 const session = require("express-session");
 const GitHubStrategy = require("passport-github2").Strategy;
 const cors = require("cors");
+
+const isProduction = process.env.NODE_ENV === "production";
 
 app
   .use(bodyParser.json())
@@ -26,33 +20,20 @@ app
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true, // true in production with HTTPS
+        secure: isProduction, // true in production with HTTPS
         httpOnly: true,
-        sameSite: "none", // allows cross-site GETs like /auth
+        sameSite: isProduction ? "none" : "lax", // 'none' for cross-site cookies
       },
+    })
+  )
+  .use(
+    cors({
+      origin: "https://sports-stop-frontend.onrender.com",
+      credentials: true,
     })
   )
   .use(passport.initialize())
   .use(passport.session())
-  .use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, Z-Key"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS"
-    );
-    next();
-  })
-  .use(
-    cors({
-      origin: "https://sports-stop-frontend.onrender.com", // your frontend origin
-      credentials: true,
-      methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
-    })
-  )
   .use("/", require("./routes/index.js"));
 
 passport.use(
@@ -63,9 +44,7 @@ passport.use(
       callbackURL: process.env.CALLBACK_URL,
     },
     function (accessToken, refreshToken, profile, done) {
-      //User.findOrCreate({ githubId: profile.id }, function (err, user){
       return done(null, profile);
-      //})
     }
   )
 );
@@ -89,7 +68,7 @@ app.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "/api-docs",
-    session: false,
+    // session: false REMOVED so user is saved in session
   }),
   (req, res) => {
     req.session.user = req.user;
@@ -102,6 +81,16 @@ app.get("/auth", (req, res) => {
     res.status(200).json(req.session.user);
   } else {
     res.status(401).json({ message: "Not authenticated" });
+  }
+});
+
+mongodb.initDb((err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(port, () => {
+      console.log(`Database is listening and node Running on port ${port}`);
+    });
   }
 });
 
