@@ -27,7 +27,7 @@ app
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true, // true in production with HTTPS
+        secure: false, // true in production with HTTPS
         httpOnly: true,
         sameSite: false, // allows cross-site GETs like /auth
         maxAge: 60 * 60 * 24 * 1000,
@@ -101,7 +101,7 @@ app.get(
   (req, res) => {
     req.session.user = req.user;
 
-    res.redirect("https://sports-stop-frontend.onrender.com");
+    res.redirect("http://localhost:8080");
   }
 );
 
