@@ -99,7 +99,7 @@ app.get(
     req.session.user = req.user;
     console.log(req.cookies);
     res.set({ "Set-Cookie": `connect.sid=${req.cookies["connect.sid"]}` });
-    res.redirect("localhost:8080");
+    res.redirect("https://sports-stop-frontend.onrender.com");
   }
 );
 
