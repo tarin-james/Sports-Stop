@@ -30,6 +30,7 @@ app
         secure: true, // true in production with HTTPS
         httpOnly: true,
         sameSite: "none", // allows cross-site GETs like /auth
+        maxAge: 60 * 60 * 24 * 1000,
       },
     })
   )
@@ -47,6 +48,10 @@ app
     res.setHeader(
       "Access-Control-Allow-Methods",
       "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Credentials",
+      "true"
     );
     next();
   })
