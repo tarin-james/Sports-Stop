@@ -101,7 +101,7 @@ app.get(
   (req, res) => {
     req.session.user = req.user;
 
-    res.redirect("http://localhost:8080");
+    res.redirect("https://sports-stop-frontend.onrender.com");
   }
 );
 
