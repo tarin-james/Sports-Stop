@@ -78,11 +78,15 @@ app.get(
     session: true,
   }),
   (req, res) => {
+    console.log(
+      `/github/callback | ${req.session} | ${req.user} | ${req.isAuthenticated}`
+    );
     res.redirect("https://sports-stop-frontend.onrender.com");
   }
 );
 
 app.get("/auth", (req, res) => {
+  console.log(`/auth | ${req.session} | ${req.user} | ${req.isAuthenticated}`);
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
   } else {
