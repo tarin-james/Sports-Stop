@@ -47,7 +47,7 @@ app
   })
   .use(
     cors({
-      origin: "https://sports-stop.onrender.com", // your frontend origin
+      origin: "https://sports-stop-frontend.onrender.com", // your frontend origin
       credentials: true,
       methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
     })
@@ -92,7 +92,7 @@ app.get(
   }),
   (req, res) => {
     req.session.user = req.user;
-    res.redirect("https://sports-stop.onrender.com");
+    res.redirect("https://sports-stop-frontend.onrender.com");
   }
 );
 
