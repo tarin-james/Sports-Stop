@@ -113,4 +113,9 @@ app.get("/auth", (req, res) => {
   }
 });
 
+app.get("/test-session", (req, res) => {
+  req.session.hello = "world";
+  res.send("Session set.");
+});
+
 module.exports = app;
