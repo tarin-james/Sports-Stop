@@ -27,10 +27,11 @@ app
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true, // true in production with HTTPS
+        secure: false, // true in production with HTTPS
         httpOnly: true,
-        sameSite: "none", // allows cross-site GETs like /auth
+        sameSite: false, // allows cross-site GETs like /auth
         maxAge: 60 * 60 * 24 * 1000,
+        domain: ".onrender.com",
       },
     })
   )
