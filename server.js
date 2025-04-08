@@ -12,14 +12,6 @@ const port = process.env.PORT || 8080;
 // --- Middleware ---
 app.use(bodyParser.json());
 
-// CORS for frontend on Render
-app.use(
-  cors({
-    origin: "https://sports-stop-frontend.onrender.com",
-    credentials: true,
-  })
-);
-
 // Session setup
 app.use(
   session({
