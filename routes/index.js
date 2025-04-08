@@ -11,7 +11,11 @@ router.use("/reviews", require("./reviews"));
 
 router.use("/stores", require("./stores"));
 
-router.get("/login", passport.authenticate("github"), (req, res) => {});
+router.get(
+  "/login",
+  passport.authenticate("github", { session: true }),
+  (req, res) => {}
+);
 
 router.get("/logout", function (req, res, next) {
   req.logout(function (err) {
