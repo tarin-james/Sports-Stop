@@ -27,7 +27,7 @@ app
       saveUninitialized: false,
       cookie: {
         secure: true, // true in production with HTTPS
-        sameSite: "None", // allows cross-site GETs like /auth
+        sameSite: "lax", // allows cross-site GETs like /auth
         httpOnly: true,
       },
     })
