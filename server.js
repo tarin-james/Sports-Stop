@@ -29,7 +29,7 @@ app
       cookie: {
         secure: false, // true in production with HTTPS
         httpOnly: true,
-        sameSite: false, // allows cross-site GETs like /auth
+        sameSite: "none", // allows cross-site GETs like /auth
         maxAge: 60 * 60 * 24 * 1000,
       },
     })
