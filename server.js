@@ -28,7 +28,6 @@ app
       cookie: {
         secure: true, // true in production with HTTPS
         sameSite: "lax", // allows cross-site GETs like /auth
-        httpOnly: true,
       },
     })
   )
