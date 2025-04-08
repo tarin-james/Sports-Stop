@@ -31,7 +31,7 @@ app
         httpOnly: true,
         sameSite: false, // allows cross-site GETs like /auth
         maxAge: 60 * 60 * 24 * 1000,
-        // domain: "sports-stop-frontend.onrender.com",
+        domain: ".onrender.com",
       },
     })
   )
