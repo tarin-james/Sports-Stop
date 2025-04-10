@@ -110,6 +110,10 @@ const updateAuction = async (req, res) => {
     duration: req.body.duration,
   };
 
+  if (req.body.images) {
+    auction.images = req.body.images;
+  }
+
   if (req.body.comments) {
     auction.comments = req.body.comments;
   }
