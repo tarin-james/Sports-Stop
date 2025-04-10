@@ -1,16 +1,20 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const auctionController = require('../controllers/auction');
+const auctionController = require("../controllers/auction");
 const { isAuthenticated } = require("../middleware/authenticate");
-router.get('/', auctionController.getAll);
+router.get("/", auctionController.getAll);
 
-router.get('/:id', auctionController.getSingle);
+router.get("/user/:id", auctionController.getUserAuctions);
 
-router.post('/', isAuthenticated, auctionController.createAuction);
+router.get("/:id", auctionController.getSingle);
 
-router.put('/:id', isAuthenticated, auctionController.updateAuction);
+router.post("/", isAuthenticated, auctionController.createAuction);
 
-router.delete('/:id', isAuthenticated, auctionController.deleteAuction);
+router.post("/list", isAuthenticated, auctionController.getFavoriteAuctions);
+
+router.put("/:id", isAuthenticated, auctionController.updateAuction);
+
+router.delete("/:id", isAuthenticated, auctionController.deleteAuction);
 
 module.exports = router;

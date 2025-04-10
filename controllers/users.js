@@ -24,6 +24,20 @@ const getSingle = async (req, res) => {
   });
 };
 
+const getFavorites = async (req, res) => {
+  //#swagger.tags=['Users']
+  const userId = req.params.id;
+  const result = await mongodb
+    .getDatabase()
+    .db()
+    .collection("favorites")
+    .find({ userId: userId });
+  result.toArray().then((favorites) => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(favorites[0]);
+  });
+};
+
 const createUser = async (req, res) => {
   //#swagger.tags=['Users']
   const user = {
@@ -71,6 +85,29 @@ const updateUser = async (req, res) => {
   }
 };
 
+const updateFavorites = async (req, res) => {
+  //#swagger.tags=['Users']
+  const userId = req.params.id;
+  const favorites = {
+    userId: userId,
+    favorites: req.body.favorites,
+  };
+  const response = await mongodb
+    .getDatabase()
+    .db()
+    .collection("favorites")
+    .replaceOne({ userId: userId }, favorites, { upsert: true });
+  if (response.modifiedCount > 0 || response.upsertedId) {
+    res.status(204).send();
+  } else {
+    res
+      .status(500)
+      .json(
+        response.error || "Some error occurred while updating the favorites."
+      );
+  }
+};
+
 const deleteUser = async (req, res) => {
   //#swagger.tags=['Users']
   const userId = new ObjectId(req.params.id);
@@ -91,7 +128,9 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getAll,
   getSingle,
+  getFavorites,
   createUser,
   updateUser,
+  updateFavorites,
   deleteUser,
 };
